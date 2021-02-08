@@ -1,19 +1,43 @@
-import cases from 'jest-in-case'
-import createBoard from './createBoard'
+import cases from "jest-in-case";
 import kingInCheck from './king_in_check'
 
-cases('king in check', args => {
-    const board = createBoard(args.pieces)
-    expect(kingInCheck(board)).toEqual(args.expectedResult)
-}, [
-    {
-        name: 'it should return false when board is empty', 
-        pieces: [],
-        expectedResult: false
+const emptyBoard = [
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','','']
+]
+
+
+const kingInCheckByQueenInTheSameRankBoard = [
+    ['','','','','','','',''],
+    ['','K','Q','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','','']
+]
+
+cases(
+    "king in check",
+    (args) => {
+        expect(kingInCheck(args.board)).toBe(args.expectedResult);
     },
+    [{
+        name: "should return false when board is empty",
+        board: emptyBoard,
+        expectedResult: false,
+    }, 
     {
-      name: 'it should return true when king is in check by queen',
-      pieces: [{type: 'K', rank: 3, file: 'b'}, {type: 'Q', rank: 3, file: 'c'}],
-      expectedResult: true
+        name: "should return true when King is in check by Queen in the same rank",
+        board: kingInCheckByQueenInTheSameRankBoard,
+        expectedResult: true
     }
-])
+    ]
+);

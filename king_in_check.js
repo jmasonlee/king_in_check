@@ -1,3 +1,5 @@
-export default board => {
-    return false
+export default (board) => {
+    return isInSameFile();
 }
+
+const isInSameFile = () => {}
