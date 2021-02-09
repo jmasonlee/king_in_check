@@ -1,5 +1,5 @@
-import cases from "jest-in-case";
-import kingInCheck from './king_in_check'
+import cases from 'jest-in-case'
+import king_in_check from './king_in_check'
 
 const emptyBoard = [
     ['','','','','','','',''],
@@ -12,32 +12,10 @@ const emptyBoard = [
     ['','','','','','','','']
 ]
 
-
-const kingInCheckByQueenInTheSameRankBoard = [
-    ['','','','','','','',''],
-    ['','K','Q','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','',''],
-    ['','','','','','','','']
-]
-
-cases(
-    "king in check",
-    (args) => {
-        expect(kingInCheck(args.board)).toBe(args.expectedResult);
-    },
-    [{
-        name: "should return false when board is empty",
-        board: emptyBoard,
-        expectedResult: false,
-    }, 
-    {
-        name: "should return true when King is in check by Queen in the same rank",
-        board: kingInCheckByQueenInTheSameRankBoard,
-        expectedResult: true
-    }
-    ]
-);
+cases('king_in_check', args => {
+    expect(king_in_check(args.board)).toEqual(args.expectedResult)
+}, [{
+    name: 'should return false when board is empty',
+    board: emptyBoard,
+    expectedResult: false
+}])
