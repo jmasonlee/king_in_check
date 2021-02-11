@@ -1,65 +1,55 @@
 import cases from 'jest-in-case'
 import king_in_check from './king_in_check'
 
-const kingAndQueenInSameRank = [
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', 'K', 'Q', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '']
+const kingInCheckByQueenInSameRank = [
+  ['', '', '', '', '', '', '', ''],
+  ['', 'K', '', '', '', '', 'Q', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '']
 ]
 
-const queenNotAttacking = [
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', 'Q', '', ''],
-    ['', '', '', 'K', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '']
+const kingInCheckByQueenInSameFile = [
+  ['', '', '', '', '', '', '', ''],
+  ['', 'K', '', '', '', '', '', ''],
+  ['', 'Q', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '']
 ]
 
-const kingAndQueenInSameFile = [
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', 'Q', '', '', '', ''],
-    ['', '', '', 'K', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '']
-];
-
-let queenOnDiagonalToKing = [
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', 'K', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', 'Q', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '']
-];
+const kingNotInCheck = [
+  ['', '', '', '', '', '', '', ''],
+  ['', 'K', '', '', '', '', '', ''],
+  ['', '', '', 'Q', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', ''],
+  ['', '', '', '', '', '', '', '']
+]
 cases('king_in_check', args => {
-    expect(king_in_check(args.board)).toBe(args.expectedResult)
+  console.log(king_in_check)
+  expect(king_in_check(args.board)).toBe(args.expectedResult)
 }, [{
-    name: 'should return true if queen is in same rank as king',
-    board: kingAndQueenInSameRank,
-    expectedResult: true
+  name: 'it should return true when king is checked by queen in same rank',
+  board: kingInCheckByQueenInSameRank,
+  expectedResult: true
 }, {
-    name: 'should return false if queen is on board, but king is not in check',
-    board: queenNotAttacking,
-    expectedResult: false
-}, {
-    name: 'should return true if queen is in same file as king',
-    board: kingAndQueenInSameFile,
+  name: 'it should return false when king is not in check by queen',
+  board: kingNotInCheck,
+  expectedResult: false
+},
+  {
+    name: 'it should return true when king is checked by queen in same file',
+    board: kingInCheckByQueenInSameFile,
     expectedResult: true
-}, {
-    name: 'should return true if queen can attack from a diagonal',
-    board: queenOnDiagonalToKing,
-    expectedResult: true
-}])
+  }])
