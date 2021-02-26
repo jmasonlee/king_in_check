@@ -1,113 +1,73 @@
-import {isInSameFile, isInSameRank, isOnSameDiagonal, pawnCanAttack} from "./king_in_check";
+import cases from 'jest-in-case'
+import {isInSameRank, isInSameFile, isOnSameDiagonal, pawnCanAttack} from './king_in_check'
 
-describe('functions', () => {
-  it('should return true if piece is in same rank as king', () => {
-    const king = {
-      type: 'K',
-      rank: 1,
-      file: 4
+cases('king in check', args => {
+    const king = {type: 'K', rank: args.kingRank, file: args.kingFile}
+    const piece = {type: args.pieceType, rank: args.pieceRank, file: args.pieceFile}
+    expect(args.functionToTest(king, piece)).toBe(args.expected)
+}, [
+    {
+        name: 'will return true if in same rank',
+        kingRank: 3,
+        kingFile: 4,
+        pieceRank: 3,
+        pieceFile: 2,
+        expected: true,
+        functionToTest: isInSameRank
+    },
+    {
+        name: 'will return false if not in same rank',
+        kingRank: 4,
+        kingFile: 2,
+        pieceRank: 3,
+        pieceFile: 2,
+        expected: false,
+        functionToTest: isInSameRank
+    },
+    {
+        name: 'will return true if in same file',
+        kingRank: 4,
+        kingFile: 2,
+        pieceRank: 3,
+        pieceFile: 2,
+        expected: true,
+        functionToTest: isInSameFile
+    },
+    {
+        name: 'will return false if not in same file',
+        kingRank: 4,
+        kingFile: 0,
+        pieceRank: 3,
+        pieceFile: 2,
+        expected: false,
+        functionToTest: isInSameFile
+    },
+    {
+        name: 'will return true if on same diagonal',
+        kingRank: 4,
+        kingFile: 4,
+        pieceRank: 3,
+        pieceFile: 3,
+        expected: true,
+        functionToTest: isOnSameDiagonal
+    },
+    {
+        name: 'will return false if not on same diagonal',
+        kingRank: 5,
+        kingFile: 4,
+        pieceRank: 3,
+        pieceFile: 3,
+        expected: false,
+        functionToTest: isOnSameDiagonal
+    },
+    {
+        name: 'will return true if pawn can attack King',
+        kingRank: 4,
+        kingFile: 3,
+        pieceType: 'P',
+        pieceRank: 5,
+        pieceFile: 4,
+        expected: true,
+        functionToTest: pawnCanAttack
     }
-    const piece = {
-      type: 'P',
-      rank: 1,
-      file: 2
-    }
-    expect(isInSameRank(king, piece)).toBe(true)
-  })
-
-  it('should return false if piece is not in same rank as king', function () {
-    const king = {
-      type: 'K',
-      rank: 0,
-      file: 4
-    }
-    const piece = {
-      type: 'P',
-      rank: 1,
-      file: 2
-    }
-    expect(isInSameRank(king, piece)).toBe(false)
-  });
-
-  it('should return true if piece is in same file as king', function () {
-    const king = {
-      type: 'K',
-      rank: 0,
-      file: 4
-    }
-    const piece = {
-      type: 'P',
-      rank: 1,
-      file: 4
-    }
-    expect(isInSameFile(king, piece)).toBe(true)
-  });
-
-  it('should return false if piece is not in same file as king', function () {
-    const king = {
-      type: 'K',
-      rank: 0,
-      file: 4
-    }
-    const piece = {
-      type: 'P',
-      rank: 0,
-      file: 2
-    }
-    expect(isInSameFile(king, piece)).toBe(false)
-  });
-
-  it('should return true if piece is on same diagonal as king', function () {
-    const king = {
-      type: 'K',
-      rank: 0,
-      file: 0
-    }
-    const piece = {
-      type: 'P',
-      rank: 1,
-      file: 1
-    }
-    expect(isOnSameDiagonal(king, piece)).toBe(true)
-  });
-  it('should return false if piece is not on same diagonal as king', function () {
-    const king = {
-      type: 'K',
-      rank: 3,
-      file: 0
-    }
-    const piece = {
-      type: 'P',
-      rank: 1,
-      file: 1
-    }
-    expect(isOnSameDiagonal(king, piece)).toBe(false)
-  });
-  it('should return true if pawn can attack king', () => {
-    const king = {
-      type: 'K',
-      rank: 4,
-      file: 3
-    }
-    const pawn = {
-      type: 'P',
-      rank: 5,
-      file: 4
-    }
-    expect(pawnCanAttack(pawn, king)).toBe(true)
-  })
-
-  it('should return false if pawn cannot attack king', () => {
-    const king = {
-      type: 'K',
-      rank: 4,
-      file: 3
-    }
-    const pawn = {
-      type: 'P',
-      rank: 3,
-      file: 4
-    }
-    expect(pawnCanAttack(pawn, king)).toBe(false)
-  })
-})
+])
