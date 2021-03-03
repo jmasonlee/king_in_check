@@ -1,21 +1,17 @@
-export const isInSameRank = (p1, p2) => {
-    return p1.rank === p2.rank
+const map = {
+ 'K': false,
+ 'R': true,
+ 'Q': true,
+ 'P': false,
+ 'B': false,
+ 'N': false
 }
 
-export const isInSameFile = (p1, p2) => {
-    return p1.file === p2.file
-}
+const isOnS
 
-export const isOnSameDiagonal = (p1, p2) => {
-    const set = new Set()
-    set.add(Math.abs(p1.rank - p2.rank))
-    set.add(Math.abs(p1.file - p2.file))
-    return set.size === 1
-}
-
-export const pawnCanAttack = (p1, pawn) => {
-    const set = new Set()
-    set.add(pawn.rank - p1.rank)
-    set.add(Math.abs(pawn.file - p1.file))
-    return set.size === 1
+export default board => {
+ let piecesOnBoard = board.flat().filter(o => o !== '');
+ let result = false
+ piecesOnBoard.forEach(piece => { result = result || map[piece]})
+ return result;
 }

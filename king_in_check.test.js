@@ -1,73 +1,66 @@
 import cases from 'jest-in-case'
-import {isInSameRank, isInSameFile, isOnSameDiagonal, pawnCanAttack} from './king_in_check'
+import kingInCheck from './king_in_check'
+
+const board =
+    [
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', '']
+    ]
+
+beforeEach(() => {
+    board.map(
+        rank => {
+            rank.map(() => '')
+        }
+    )
+})
+
+function getPiece(type, rank, file) {
+    return {type: type, rank: rank, file: file}
+}
+
+const addPieceToBoard = (pieces) => {
+    pieces.forEach(piece => board[piece.rank][piece.file] = piece.type)
+}
 
 cases('king in check', args => {
-    const king = {type: 'K', rank: args.kingRank, file: args.kingFile}
-    const piece = {type: args.pieceType, rank: args.pieceRank, file: args.pieceFile}
-    expect(args.functionToTest(king, piece)).toBe(args.expected)
+    addPieceToBoard(args.pieces)
+    expect(kingInCheck(board)).toBe(args.expected)
 }, [
     {
-        name: 'will return true if in same rank',
-        kingRank: 3,
-        kingFile: 4,
-        pieceRank: 3,
-        pieceFile: 2,
-        expected: true,
-        functionToTest: isInSameRank
-    },
-    {
-        name: 'will return false if not in same rank',
-        kingRank: 4,
-        kingFile: 2,
-        pieceRank: 3,
-        pieceFile: 2,
+        name: 'should return false when king is alone on board',
         expected: false,
-        functionToTest: isInSameRank
+        pieces: [getPiece('K', 0, 4)]
     },
     {
-        name: 'will return true if in same file',
-        kingRank: 4,
-        kingFile: 2,
-        pieceRank: 3,
-        pieceFile: 2,
+        name: 'should return true when rook is in same rank as king',
         expected: true,
-        functionToTest: isInSameFile
+        pieces: [getPiece('K', 0, 4), getPiece('R', 0, 2)]
     },
     {
-        name: 'will return false if not in same file',
-        kingRank: 4,
-        kingFile: 0,
-        pieceRank: 3,
-        pieceFile: 2,
+        name: 'should return false when pawn is in same rank as king',
         expected: false,
-        functionToTest: isInSameFile
+        pieces: [getPiece('K', 0, 4), getPiece('P', 0, 2)]
     },
     {
-        name: 'will return true if on same diagonal',
-        kingRank: 4,
-        kingFile: 4,
-        pieceRank: 3,
-        pieceFile: 3,
+        name: 'should return true when queen is in same rank as king',
         expected: true,
-        functionToTest: isOnSameDiagonal
+        pieces: [getPiece('K', 0, 4), getPiece('Q', 0, 2)]
     },
     {
-        name: 'will return false if not on same diagonal',
-        kingRank: 5,
-        kingFile: 4,
-        pieceRank: 3,
-        pieceFile: 3,
+        name: 'should return false when bishop is in same rank as king',
         expected: false,
-        functionToTest: isOnSameDiagonal
+        pieces: [getPiece('K', 0, 4), getPiece('B', 0, 2)]
     },
     {
-        name: 'will return true if pawn can attack King',
-        kingRank: 4,
-        kingFile: 3,
-        pieceType: 'P',
-        pieceRank: 5,
-        pieceFile: 4,
+        name: 'should return true when bishop is on same diagonal as king',
         expected: true,
-        functionToTest: pawnCanAttack
+        pieces: [getPiece('K', 0, 4), getPiece('B', 1, 5)]
     }
 ])
