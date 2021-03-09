@@ -1,7 +1,8 @@
 import cases from 'jest-in-case'
 import kingInCheck from './king_in_check'
+import cloneDeep from 'lodash/cloneDeep'
 
-const board =
+const emptyBoard =
     [
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
@@ -13,12 +14,10 @@ const board =
         ['', '', '', '', '', '', '', '']
     ]
 
-beforeEach(() => {
-    board.map(
-        rank => {
-            rank.map(() => '')
-        }
-    )
+let board
+
+afterEach(() => {
+    board = cloneDeep(emptyBoard)
 })
 
 function getPiece(type, rank, file) {
@@ -46,17 +45,17 @@ cases('king in check', args => {
     {
         name: 'should return false when pawn is in same rank as king',
         expected: false,
-        pieces: [getPiece('K', 0, 4), getPiece('P', 0, 2)]
+        pieces: [getPiece('K', 0, 4), getPiece('P', 0, 1)]
     },
     {
         name: 'should return true when queen is in same rank as king',
         expected: true,
-        pieces: [getPiece('K', 0, 4), getPiece('Q', 0, 2)]
+        pieces: [getPiece('K', 0, 4), getPiece('Q', 0, 3)]
     },
     {
         name: 'should return false when bishop is in same rank as king',
         expected: false,
-        pieces: [getPiece('K', 0, 4), getPiece('B', 0, 2)]
+        pieces: [getPiece('K', 0, 4), getPiece('B', 0, 5)]
     },
     {
         name: 'should return true when bishop is on same diagonal as king',
