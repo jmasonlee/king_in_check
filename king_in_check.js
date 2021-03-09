@@ -1,6 +1,10 @@
 const isOnSameDiagonal = (p1, p2) =>{
+    console.log(p1)
+    console.log(p2)
  let rankDiff = Math.abs(p1.rank - p2.rank)
  let fileDiff = Math.abs(p1.file - p2.file)
+ console.log(p1.rank)
+ console.log(fileDiff)
  return fileDiff === rankDiff
 }
 
@@ -9,7 +13,7 @@ const map = {
  'R': () => true,
  'Q': () => true,
  'P': () => false,
- 'B': isOnSameDiagonal,
+ 'B': (king, bishop) => isOnSameDiagonal(king, bishop),
  'N': () => false
 }
 
@@ -27,7 +31,7 @@ const getPiecesOnBoard = board => {
 
 export default board => {
  let piecesOnBoard = getPiecesOnBoard(board);
- const king = piecesOnBoard.filter(p => p.type === 'K')
+ const king = piecesOnBoard.filter(p => p.type === 'K')[0]
  let result = false
  piecesOnBoard.forEach(piece => { result = result || map[piece.type](king, piece)})
  return result;

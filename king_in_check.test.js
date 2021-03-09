@@ -16,7 +16,7 @@ const emptyBoard =
 
 let board
 
-afterEach(() => {
+beforeEach(() => {
     board = cloneDeep(emptyBoard)
 })
 
@@ -61,5 +61,10 @@ cases('king in check', args => {
         name: 'should return true when bishop is on same diagonal as king',
         expected: true,
         pieces: [getPiece('K', 0, 4), getPiece('B', 1, 5)]
+    },
+    {
+        name: 'should return false when bishop is on same diagonal, but another piece is in the way',
+        expected: false,
+        pieces: [getPiece('K', 0, 4), getPiece('R', 1, 5), getPiece('B', 2, 6)]
     }
 ])
