@@ -29,10 +29,12 @@ const getPiecesOnBoard = board => {
   return pieces
 }
 
+const checkInCheck = (piecesOnBoard, result=false) => {
+  const king = piecesOnBoard.filter(p => p.type === 'K')[0]
+  return piecesOnBoard.findIndex(piece => map[piece.type](king, piece)) !== -1
+}
+
 export default board => {
  let piecesOnBoard = getPiecesOnBoard(board);
- const king = piecesOnBoard.filter(p => p.type === 'K')[0]
- let result = false
- piecesOnBoard.forEach(piece => { result = result || map[piece.type](king, piece)})
- return result;
+ return checkInCheck(piecesOnBoard)
 }
