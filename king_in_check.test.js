@@ -33,38 +33,18 @@ cases('king in check', args => {
     expect(kingInCheck(board)).toBe(args.expected)
 }, [
     {
-        name: 'should return false when king is alone on board',
-        expected: false,
-        pieces: [getPiece('K', 0, 4)]
+        name: 'should return false when K is alone',
+        pieces: [getPiece('K', 5, 3)],
+        expected: false
     },
     {
-        name: 'should return true when rook is in same rank as king',
-        expected: true,
-        pieces: [getPiece('K', 0, 4), getPiece('R', 0, 2)]
-    },
+        name: 'should return true when K is in check from above in same file',
+        pieces: [getPiece('K', 5, 3), getPiece('Q', 2, 3)],
+        expected: true
+    }, 
     {
-        name: 'should return false when pawn is in same rank as king',
-        expected: false,
-        pieces: [getPiece('K', 0, 4), getPiece('P', 0, 1)]
+        name: 'should return false when K is in not in check from above in same file',
+        pieces: [getPiece('K', 5, 3), getPiece('P', 2, 3)],
+        expected: false
     },
-    {
-        name: 'should return true when queen is in same rank as king',
-        expected: true,
-        pieces: [getPiece('K', 0, 4), getPiece('Q', 0, 3)]
-    },
-    {
-        name: 'should return false when bishop is in same rank as king',
-        expected: false,
-        pieces: [getPiece('K', 0, 4), getPiece('B', 0, 5)]
-    },
-    {
-        name: 'should return true when bishop is on same diagonal as king',
-        expected: true,
-        pieces: [getPiece('K', 0, 4), getPiece('B', 1, 5)]
-    },
-    {
-        name: 'should return false when bishop is on same diagonal, but another piece is in the way',
-        expected: false,
-        pieces: [getPiece('K', 0, 4), getPiece('R', 1, 5), getPiece('B', 2, 6)]
-    }
 ])
