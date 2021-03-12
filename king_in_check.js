@@ -12,28 +12,42 @@ const checkablePositions = {
   KN: ['N']
 }
 
-const isInCheckFromNE = pieces => {
-  const king = pieces.find(p => p.type ='K')
-  const piecesInNE = pieces.filter(p=>{
-    let rankDif = p.rank - king.rank
-    let fileDif = p.file - king.file
-    return rankDif === fileDif && rankDif < 0  && fileDif < 0
-  })
-  const closestPieceInNE = piecesInNE.reduce((p, closest) => {
-    let rankDif = p.rank - king.rank
-  })
-  return checkablePositions.NE.filter(p => pieces.includes(p)) > 0
-  
-}
 
 const getPiecesFromBoard = board => {
-return board.flat().map((s,index)=>{
-  return s ? { type: s, rank: Math.floor(index/8), file: index%8 } : ''
-}).filter(s=>s!=='')
+  const getRankFromIndex = (index) => {
+    return Math.floor(index / 8);
+  }
+
+  const getFileFromIndex = (index) => {
+    return index % 8;
+  }
+
+  const kingIndex = board.flat().indexOf('K')
+  const kingFile = getFileFromIndex(kingIndex)
+  const kingRank = getRankFromIndex(kingIndex)
+
+  return board.flat().map((s, index) => {
+    return s ?
+      {
+        type: s,
+        rank: getRankFromIndex(index) - kingRank,
+        file: getFileFromIndex(index) - kingFile
+      } : ''
+  }).filter(s => s !== '' && s !== 'K')
+}
+
+const canAttackFromNE = piece => {
+  return piece.rank < 0 && piece.file < 0 && piece.file === piece.rank && checkablePositions.NE.includes(piece.type)
+}
+const canAttackFromN = piece => {
+  return piece.rank < 0
+    && piece.file === 0
+    && piece.file !== piece.rank
+    && checkablePositions.N.includes(piece.type)
 }
 
 export default board => {
   const pieces = getPiecesFromBoard(board)
-  const checkablePieces = isInCheckFromNE(pieces)
-  return checkablePieces
-} 
+
+  return pieces.length > 1 && pieces.filter(p => canAttackFromNE(p) || canAttackFromN(p)).length > 0
+}
