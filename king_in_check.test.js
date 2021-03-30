@@ -56,5 +56,10 @@ cases('king in check', args => {
         name: 'should return false when king is not in check from from northeast',
         pieces: [getPiece('K', 5,3), getPiece('N', 4, 2)],
         expected: false
-    }
+    },
+    {
+        name: 'should return true when king is in check from the same rank',
+        pieces: [getPiece('K', 5,3), getPiece('R', 5, 2)],
+        expected: true
+    },
 ])
