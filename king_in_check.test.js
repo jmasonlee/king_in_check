@@ -62,4 +62,9 @@ cases('king in check', args => {
         pieces: [getPiece('K', 5,3), getPiece('R', 5, 2)],
         expected: true
     },
+    {
+        name: 'should return true when king is in check from a south diagonal',
+        pieces: [getPiece('K', 5,3), getPiece('B', 6, 2)],
+        expected: true
+    },
 ])

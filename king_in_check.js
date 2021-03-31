@@ -27,8 +27,8 @@ export default board => {
     return s ?
       {
         type: s,
-        rank: getRankFromIndex(index) - king.rank,
-        file: getFileFromIndex(index) - king.file
+        rankDiff: getRankFromIndex(index) - king.rank,
+        fileDiff: getFileFromIndex(index) - king.file
       } : EMPTY_SQUARE
   };
 
@@ -41,15 +41,15 @@ export default board => {
     return board.flat().map(getPieceIfPresent(king)).filter(filterRelevantPieces())
   }
 
-  const isOnDiagonalFromKing = piece => piece.file === piece.rank
+  const isOnDiagonalFromKing = piece => Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
 
-  const isNorthOfKing = piece => piece.rank < 0
+  const isNorthOfKing = piece => piece.rankDiff < 0
 
   const canAttackFromNorthDiagonal = piece => {
     return isNorthOfKing(piece) && isOnDiagonalFromKing(piece) && canCheckFrom.NORTH_DIAGONAL.includes(piece.type)
   }
 
-  const isInStraightLineFromKing = piece => piece.file === 0 || piece.rank === 0
+  const isInStraightLineFromKing = piece => piece.fileDiff === 0 || piece.rankDiff === 0
 
   const canAttackFromStraightLine = piece => {
     return isInStraightLineFromKing(piece)
@@ -58,5 +58,7 @@ export default board => {
 
   const pieces = getPiecesFromBoard(board)
 
-  return pieces.length > 1 && pieces.filter(p => canAttackFromNorthDiagonal(p) || canAttackFromStraightLine(p)).length > 0
+  const canAttackFromSouthDiagonal = piece => isOnDiagonalFromKing(piece) && canCheckFrom.SOUTH_DIAGONAL.includes(piece.type)
+
+  return pieces.filter(p => canAttackFromNorthDiagonal(p) || canAttackFromSouthDiagonal(p) || canAttackFromStraightLine(p)).length > 0
 }
