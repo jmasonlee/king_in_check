@@ -1,64 +1,81 @@
 export default board => {
-  const EMPTY_SQUARE = '';
-  const KING = 'K'
-  const canCheckFrom = {
-    STRAIGHT_LINE: ['Q', 'R'],
-    NORTH_DIAGONAL: ['Q', 'B', 'P'],
-    SOUTH_DIAGONAL: ['Q', 'B'],
-    KN: ['N']
-  }
-  const getFileFromIndex = (index) => {
-    return index % 8
-  }
-
-  const getRankFromIndex = (index) => {
-    return Math.floor(index / 8)
-  }
-
-  const getKing = board => {
-    let index = board.flat().indexOf(KING)
-    return {
-      file: getFileFromIndex(index),
-      rank: getRankFromIndex(index)
+    const EMPTY_SQUARE = ''
+    const KING = 'K'
+    const canCheckFrom = {
+        STRAIGHT_LINE: ['Q', 'R'],
+        DIAGONAL: ['Q', 'B'],
+        NORTH_DIAGONAL: ['Q', 'B', 'P'],
+        PAWN: ['P'],
+        SOUTH_DIAGONAL: ['Q', 'B'],
+        KN: ['N']
     }
-  }
 
-  const getPieceIfPresent = king => (s, index) => {
-    return s ?
-      {
-        type: s,
-        rankDiff: getRankFromIndex(index) - king.rank,
-        fileDiff: getFileFromIndex(index) - king.file
-      } : EMPTY_SQUARE
-  };
 
-  const filterRelevantPieces = () => {
-    return s => s !== EMPTY_SQUARE && s !== KING;
-  }
+    const getFileFromIndex = (index) => {
+        return index % 8
+    }
 
-  const getPiecesFromBoard = board => {
-    const king = getKing(board)
-    return board.flat().map(getPieceIfPresent(king)).filter(filterRelevantPieces())
-  }
+    const getRankFromIndex = (index) => {
+        return Math.floor(index / 8)
+    }
 
-  const isOnDiagonalFromKing = piece => Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
+    const getKing = board => {
+        let index = board.flat().indexOf(KING)
+        return {
+            file: getFileFromIndex(index),
+            rank: getRankFromIndex(index)
+        }
+    }
 
-  const isNorthOfKing = piece => piece.rankDiff < 0
+    const getPieceIfPresent = king => (s, index) => {
+        return s ?
+            {
+                type: s,
+                rankDiff: getRankFromIndex(index) - king.rank,
+                fileDiff: getFileFromIndex(index) - king.file
+            } : EMPTY_SQUARE
+    }
 
-  const canAttackFromNorthDiagonal = piece => {
-    return isNorthOfKing(piece) && isOnDiagonalFromKing(piece) && canCheckFrom.NORTH_DIAGONAL.includes(piece.type)
-  }
+    const filterRelevantPieces = () => {
+        return s => s !== EMPTY_SQUARE && s !== KING
+    }
 
-  const isInStraightLineFromKing = piece => piece.fileDiff === 0 || piece.rankDiff === 0
+    const getPiecesFromBoard = board => {
 
-  const canAttackFromStraightLine = piece => {
-    return isInStraightLineFromKing(piece)
-      && canCheckFrom.STRAIGHT_LINE.includes(piece.type)
-  }
+        const king = getKing(board)
+        return board.flat().map(getPieceIfPresent(king)).filter(filterRelevantPieces())
+    }
 
-  const pieces = getPiecesFromBoard(board)
+    const canPawnAttack = piece => {
+        const isNextToKing = Math.abs(piece.rankDiff) === 1 && Math.abs(piece.fileDiff) === 1
+        const isNorthOfKing = piece.rankDiff < 0
 
-  const canAttackFromSouthDiagonal = piece => isOnDiagonalFromKing(piece) && canCheckFrom.SOUTH_DIAGONAL.includes(piece.type)
+        return canCheckFrom.PAWN.includes(piece.type) &&
+            isNextToKing &&
+            isNorthOfKing
+    }
 
-  return pieces.filter(p => canAttackFromNorthDiagonal(p) || canAttackFromSouthDiagonal(p) || canAttackFromStraightLine(p)).length > 0
+    const canAttackFromStraightLine = piece => {
+        const isInStraightLineFromKing = piece.fileDiff === 0 || piece.rankDiff === 0
+
+        return isInStraightLineFromKing
+            && canCheckFrom.STRAIGHT_LINE.includes(piece.type)
+    }
+
+    const canAttackFromDiagonal = piece => {
+        const isOnDiagonalFromKing = Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
+
+        return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type)
+    }
+
+    const pieceAttackPatterns = {
+        'Q': piece => canAttackFromStraightLine(piece) || canAttackFromDiagonal(piece),
+        'R': piece => canAttackFromStraightLine(piece),
+        'B': piece => canAttackFromDiagonal(piece),
+        'N': () => false,
+        'P': piece => canPawnAttack(piece)
+    }
+    const pieces = getPiecesFromBoard(board)
+console.log(pieces)
+    return pieces.filter(p => pieceAttackPatterns[p.type](p)).length > 0
 }
