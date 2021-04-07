@@ -34,7 +34,7 @@ cases('king in check', args => {
 }, [
     {
         name: 'should return false when K is alone',
-        pieces: [getPiece('K', 5, 3)],g
+        pieces: [getPiece('K', 5, 3)],
         expected: false
     },
     {
