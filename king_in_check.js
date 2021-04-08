@@ -22,6 +22,7 @@ export default board => {
     const getKing = board => {
         let index = board.flat().indexOf(KING)
         return {
+            type: KING,
             file: getFileFromIndex(index),
             rank: getRankFromIndex(index)
         }
@@ -37,11 +38,10 @@ export default board => {
     }
 
     const filterRelevantPieces = () => {
-        return s => s !== EMPTY_SQUARE && s !== KING
+        return s => s !== EMPTY_SQUARE && s.type !== KING
     }
 
     const getPiecesFromBoard = board => {
-
         const king = getKing(board)
         return board.flat().map(getPieceIfPresent(king)).filter(filterRelevantPieces())
     }
@@ -76,6 +76,6 @@ export default board => {
         'P': piece => canPawnAttack(piece)
     }
     const pieces = getPiecesFromBoard(board)
-console.log(pieces)
+
     return pieces.filter(p => pieceAttackPatterns[p.type](p)).length > 0
 }

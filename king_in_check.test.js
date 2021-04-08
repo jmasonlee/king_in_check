@@ -72,4 +72,9 @@ cases('king in check', args => {
         pieces: [getPiece('K', 5,3), getPiece('P', 3, 1)],
         expected: false
     },
+    {
+        name: 'should return false when king is not in check because there is a piece in the way',
+        pieces: [getPiece('K', 5,3), getPiece('B', 3, 1), getPiece('R', 4, 2)],
+        expected: false
+    },
 ])
