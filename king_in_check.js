@@ -1,3 +1,7 @@
+function isOnDiagonal(piece) {
+    return Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
+}
+
 export default board => {
     const EMPTY_SQUARE = ''
     const KING = 'K'
@@ -62,20 +66,21 @@ export default board => {
             && canCheckFrom.STRAIGHT_LINE.includes(piece.type)
     }
 
-    const canAttackFromDiagonal = piece => {
-        const isOnDiagonalFromKing = Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
-
-        return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type)
+    const canAttackFromDiagonal = (piece, pieces) => {
+        const isOnDiagonalFromKing = isOnDiagonal(piece)
+        const findPiecesOnTheSameVector = pieces.filter(p => isOnDiagonal(p))
+        const findPiecesOnCorrectHalf = findPiecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
+        return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type) && findPiecesOnCorrectHalf.filter(p => p.fileDiff < piece.fileDiff).length > 0
     }
 
     const pieceAttackPatterns = {
-        'Q': piece => canAttackFromStraightLine(piece) || canAttackFromDiagonal(piece),
-        'R': piece => canAttackFromStraightLine(piece),
-        'B': piece => canAttackFromDiagonal(piece),
+        'Q': (piece, pieces) => canAttackFromStraightLine(piece, pieces) || canAttackFromDiagonal(piece, pieces),
+        'R': (piece, pieces) => canAttackFromStraightLine(piece, pieces),
+        'B': (piece, pieces) => canAttackFromDiagonal(piece, pieces),
         'N': () => false,
-        'P': piece => canPawnAttack(piece)
+        'P': (piece, pieces) => canPawnAttack(piece)
     }
     const pieces = getPiecesFromBoard(board)
 
-    return pieces.filter(p => pieceAttackPatterns[p.type](p)).length > 0
+    return pieces.filter(p => pieceAttackPatterns[p.type](p, pieces)).length > 0
 }
