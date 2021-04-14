@@ -73,8 +73,23 @@ cases('king in check', args => {
         expected: false
     },
     {
-        name: 'should return false when king is not in check because there is a piece in the way',
+        name: 'should return false when king is not in check because there is a piece in the way diagonally',
         pieces: [getPiece('K', 5,3), getPiece('B', 3, 1), getPiece('R', 4, 2)],
         expected: false
+    },
+    {
+        name: 'should return false when king is not in check because there is a piece in the way in the same rank',
+        pieces: [getPiece('K', 5,3), getPiece('R', 5, 5), getPiece('P', 5, 4)],
+        expected: false
+    },
+    {
+        name: 'should return false when king is not in check because there is a piece in the way in the same file',
+        pieces: [getPiece('K', 5,3), getPiece('R', 3, 3), getPiece('P', 4, 3)],
+        expected: false
+    },
+    {
+        name: 'should return true when king is in check because there is a piece in the way in the same file',
+        pieces: [getPiece('K', 5,3), getPiece('R', 3, 3), getPiece('P', 5, 4)],
+        expected: true
     },
 ])

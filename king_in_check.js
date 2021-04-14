@@ -59,28 +59,42 @@ export default board => {
             isNorthOfKing
     }
 
-    const canAttackFromStraightLine = piece => {
-        const isInStraightLineFromKing = piece.fileDiff === 0 || piece.rankDiff === 0
+    const getInStraightLineFromKing = piece => piece.fileDiff === 0 || piece.rankDiff === 0;
 
+  function findPiecesOnTheSameVector(onTheSameVector) {
+    return pieces.filter(p => onTheSameVector(p));
+  }
+
+  const canAttackFromStraightLine = piece => {
+      const isInStraightLineFromKing = getInStraightLineFromKing(piece)
+
+    const piecesOnTheSameVector = findPiecesOnTheSameVector(getInStraightLineFromKing)
+      const findPiecesOnCorrectHalf = piecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
+      console.log(`find pieces on the correct half: ${JSON.stringify(findPiecesOnCorrectHalf)}`)
         return isInStraightLineFromKing
             && canCheckFrom.STRAIGHT_LINE.includes(piece.type)
+            && findPiecesOnCorrectHalf.filter(p => Math.abs(p.fileDiff) < Math.abs(piece.fileDiff) || Math.abs(p.rankDiff) < Math.abs(piece.rankDiff)).length == 0
     }
 
-    const canAttackFromDiagonal = (piece, pieces) => {
+    const canAttackFromDiagonal = (piece) => {
         const isOnDiagonalFromKing = isOnDiagonal(piece)
+        console.log(`Input piece: ${JSON.stringify(piece)}`)
+        console.log(`is on diagonal from king: ${JSON.stringify(isOnDiagonalFromKing)}`)
         const findPiecesOnTheSameVector = pieces.filter(p => isOnDiagonal(p))
+        console.log(`find pieces on the same vector: ${JSON.stringify(findPiecesOnTheSameVector)}`)
         const findPiecesOnCorrectHalf = findPiecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
-        return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type) && findPiecesOnCorrectHalf.filter(p => p.fileDiff < piece.fileDiff).length > 0
+
+        return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type) && findPiecesOnCorrectHalf.filter(p => Math.abs(p.fileDiff) < Math.abs(piece.fileDiff)).length == 0
     }
 
     const pieceAttackPatterns = {
-        'Q': (piece, pieces) => canAttackFromStraightLine(piece, pieces) || canAttackFromDiagonal(piece, pieces),
-        'R': (piece, pieces) => canAttackFromStraightLine(piece, pieces),
-        'B': (piece, pieces) => canAttackFromDiagonal(piece, pieces),
+        'Q': (piece) => canAttackFromStraightLine(piece) || canAttackFromDiagonal(piece),
+        'R': (piece) => canAttackFromStraightLine(piece),
+        'B': (piece) => canAttackFromDiagonal(piece),
         'N': () => false,
-        'P': (piece, pieces) => canPawnAttack(piece)
+        'P': (piece) => canPawnAttack(piece)
     }
     const pieces = getPiecesFromBoard(board)
 
-    return pieces.filter(p => pieceAttackPatterns[p.type](p, pieces)).length > 0
+    return pieces.filter(p => pieceAttackPatterns[p.type](p)).length > 0
 }
