@@ -2,8 +2,14 @@ function isOnDiagonal(piece) {
     return Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
 }
 
+export const getPiecesFromBoard = board => {
+  const king = getKing(board)
+  console.log(board.flat())
+  return board.flat().map(s => getPieceIfPresent(king)).filter(filterRelevantPieces())
+}
+
 export default board => {
-    const EMPTY_SQUARE = ''
+    const EMPTY_SQUARE = ' '
     const KING = 'K'
     const canCheckFrom = {
         STRAIGHT_LINE: ['Q', 'R'],
@@ -33,7 +39,8 @@ export default board => {
     }
 
     const getPieceIfPresent = king => (s, index) => {
-        return s ?
+       //console.log(`s is: ${s}`)
+        return s === EMPTY_SQUARE ?
             {
                 type: s,
                 rankDiff: getRankFromIndex(index) - king.rank,
@@ -45,10 +52,6 @@ export default board => {
         return s => s !== EMPTY_SQUARE && s.type !== KING
     }
 
-    const getPiecesFromBoard = board => {
-        const king = getKing(board)
-        return board.flat().map(getPieceIfPresent(king)).filter(filterRelevantPieces())
-    }
 
     const canPawnAttack = piece => {
         const isNextToKing = Math.abs(piece.rankDiff) === 1 && Math.abs(piece.fileDiff) === 1
@@ -95,6 +98,10 @@ export default board => {
         'P': (piece) => canPawnAttack(piece)
     }
     const pieces = getPiecesFromBoard(board)
+    console.log(`pieces: ${JSON.stringify(pieces)}`)
 
-    return pieces.filter(p => pieceAttackPatterns[p.type](p)).length > 0
+    return pieces.filter(p => {
+      console.log(`piece |${p.type}|`)
+      pieceAttackPatterns[p.type](p)
+    }).length > 0
 }
