@@ -23,8 +23,8 @@ beforeEach(() => {
 
 function convertBoard(board) {
   board = board.trim()
-  board = board.replaceAll(' ', '')
-  board = board.replaceAll('_', ' ')
+  board = board.replace(/ /g, '')
+  board = board.replace(/_/g, ' ')
   board = board.split('\n')
   for (let i = 0; i < 8; i++) {
     board[i] = [...board[i]]
