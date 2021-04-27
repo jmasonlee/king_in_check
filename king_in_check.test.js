@@ -37,11 +37,39 @@ cases('It can tell if a board is in check', args => {
   expect(kingInCheck(board)).toBe(args.check)
 }, [
   {
-    name: '1',
+    name: 'returns false when attacking piece is blocked',
     board: `
      ________
      ___Q____
      ___P____
+     ___K____
+     ________
+     ________
+     ________
+     ________
+    `,
+    check: false
+  },
+  {
+    name: 'returns false when king is alone',
+    board: `
+     ________
+     _______
+     ________
+     ___K____
+     ________
+     ________
+     ________
+     ________
+    `,
+    check: false
+  },
+  {
+    name: 'returns true when king is in check from above in the same file',
+    board: `
+     ________
+     _______
+     ______
      ___K____
      ________
      ________
