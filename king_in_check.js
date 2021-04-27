@@ -62,8 +62,8 @@ export default board => {
     }
 
     const canAttackFromStraightLine = piece => {
-        const isInStraightLineFromKing = getInStraightLineFromKing(piece)
 
+        const isInStraightLineFromKing = getInStraightLineFromKing(piece)
         const piecesOnTheSameVector = findPiecesOnTheSameVector(getInStraightLineFromKing)
         const findPiecesOnCorrectHalf = piecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
 
@@ -94,7 +94,7 @@ export default board => {
 
     const pieces = getPiecesFromBoard(board)
 
-    return pieces.filter(p => {
+    return pieces.filter(p => 
         pieceAttackPatterns[p.type](p)
-    }).length > 0
+    ).length > 0
 }

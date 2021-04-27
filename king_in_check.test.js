@@ -54,7 +54,7 @@ cases('It can tell if a board is in check', args => {
     name: 'returns false when king is alone',
     board: `
      ________
-     _______
+     ________
      ________
      ___K____
      ________
@@ -68,15 +68,15 @@ cases('It can tell if a board is in check', args => {
     name: 'returns true when king is in check from above in the same file',
     board: `
      ________
-     _______
-     ______
+     ________
+     ___Q____
      ___K____
      ________
      ________
      ________
      ________
     `,
-    check: false
+    check: true
   }
 ])
 
