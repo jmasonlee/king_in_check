@@ -3,6 +3,7 @@ function isOnDiagonal(piece) {
 }
 
 const KING = 'K'
+const EMPTY = ' '
 
 const getFileFromIndex = (index) => {
     return index % 8
@@ -62,11 +63,9 @@ export default board => {
     }
 
     const canAttackFromStraightLine = piece => {
-
         const isInStraightLineFromKing = getInStraightLineFromKing(piece)
         const piecesOnTheSameVector = findPiecesOnTheSameVector(getInStraightLineFromKing)
-        const findPiecesOnCorrectHalf = piecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
-
+        const findPiecesOnCorrectHalf = piecesOnTheSameVector.filter(p => p.type !== EMPTY && Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
         return isInStraightLineFromKing
             && canCheckFrom.STRAIGHT_LINE.includes(piece.type)
             && findPiecesOnCorrectHalf.filter(p => Math.abs(p.fileDiff) < Math.abs(piece.fileDiff) || Math.abs(p.rankDiff) < Math.abs(piece.rankDiff)).length == 0
@@ -77,7 +76,7 @@ export default board => {
 
         const findPiecesOnTheSameVector = pieces.filter(p => isOnDiagonal(p))
 
-        const findPiecesOnCorrectHalf = findPiecesOnTheSameVector.filter(p => Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
+        const findPiecesOnCorrectHalf = findPiecesOnTheSameVector.filter(p => p.type !== EMPTY && Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) && Math.sign(p.fileDiff) === Math.sign(piece.fileDiff))
 
         return isOnDiagonalFromKing && canCheckFrom.DIAGONAL.includes(piece.type) && findPiecesOnCorrectHalf.filter(p => Math.abs(p.fileDiff) < Math.abs(piece.fileDiff)).length == 0
     }
