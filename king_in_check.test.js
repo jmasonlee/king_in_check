@@ -111,7 +111,7 @@ cases(
       check: true,
     },
     {
-      name: "returns fasle when king is not in check from NE",
+      name: "returns false when king is not in check from NE",
       board: `
      ________
      ________
@@ -211,6 +211,21 @@ cases(
      ________
     `,
       check: false,
+    },
+    {
+      name:
+        `should return true when king is in check by knight`,
+      board: `
+     ________
+     ________
+     ________
+     ___K____
+     ________
+     ____N___
+     ________
+     ________
+    `,
+      check: true,
     }
   ]
 )
