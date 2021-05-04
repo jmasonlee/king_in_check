@@ -1,91 +1,78 @@
-const KING = "K";
-const EMPTY = " ";
+export default (board) => {
+    const KING = "K"
+    const EMPTY = " "
 
-const getFileFromIndex = (index) => {
-  return index % 8;
-};
+    board = board.flat()
+    const getFileFromIndex = (index) => {
+        return index % 8
+    }
 
-const getRankFromIndex = (index) => {
-  return Math.floor(index / 8);
-};
+    const getRankFromIndex = (index) => {
+        return Math.floor(index / 8)
+    }
 
-const getRelativeLocationToKing = (king, s, index) => {
-  return {
-    type: s,
-    rankDiff: getRankFromIndex(index) - king.rank,
-    fileDiff: getFileFromIndex(index) - king.file,
-  };
-};
+    const getRelativeLocationToKing = (s, index) => {
+        const kingIndex = board.indexOf(KING)
+        return {
+            type: s,
+            rankDiff: getRankFromIndex(index) - getRankFromIndex(kingIndex),
+            fileDiff: getFileFromIndex(index) - getFileFromIndex(kingIndex)
+        }
+    }
 
-const getKing = (board) => {
-  let index = board.flat().indexOf(KING);
-  return {
-    type: KING,
-    file: getFileFromIndex(index),
-    rank: getRankFromIndex(index),
-  };
-};
+    const getPiecesFromBoard = () => {
+        return board
+            .map((s, index) => getRelativeLocationToKing(s, index))
+    }
 
-const getPiecesFromBoard = (board) => {
-  const king = getKing(board);
+    const isInStraightLine = (piece) =>
+        piece.fileDiff === 0 || piece.rankDiff === 0
 
-  return board
-    .flat()
-    .map((s, index) => getRelativeLocationToKing(king, s, index));
-};
+    const isOnDiagonal = (piece) =>
+        Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff)
 
-const kingIsInCheck = (board) => {
-  const isInStraightLine = (piece) =>
-    piece.fileDiff === 0 || piece.rankDiff === 0;
+    const canPawnAttack = (piece) => {
+        const isNextToKing =
+            Math.abs(piece.rankDiff) === 1 && Math.abs(piece.fileDiff) === 1
+        const isNorthOfKing = piece.rankDiff < 0
+        return isNextToKing && isNorthOfKing
+    }
 
-  const isOnDiagonal = (piece) =>
-    Math.abs(piece.fileDiff) === Math.abs(piece.rankDiff);
+    const canKnightAttack = (piece) => {
+        const set = new Set([Math.abs(piece.rankDiff), Math.abs(piece.fileDiff)])
+        return set.has(1) && set.has(2)
+    }
 
-  const canPawnAttack = (piece) => {
-    const isNextToKing =
-      Math.abs(piece.rankDiff) === 1 && Math.abs(piece.fileDiff) === 1;
-    const isNorthOfKing = piece.rankDiff < 0;
+    const findBlockingPieces = (isOnVector, piece) => {
+        return pieces.filter(
+            (p) =>
+                isOnVector(p) &&
+                p.type !== EMPTY &&
+                Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) &&
+                Math.sign(p.fileDiff) === Math.sign(piece.fileDiff) &&
+                (Math.abs(p.fileDiff) < Math.abs(piece.fileDiff) ||
+                    Math.abs(p.rankDiff) < Math.abs(piece.rankDiff))
+        )
+    }
 
-    return isNextToKing && isNorthOfKing;
-  };
+    const canAttack = (piece, isOnVector) => {
+        const blockingPieces = findBlockingPieces(isOnVector, piece)
 
-  const canKnightAttack = (piece) => {
-    const set = new Set();
-    set.add(Math.abs(piece.rankDiff));
-    set.add(Math.abs(piece.fileDiff));
-    return set.has(1) && set.has(2);
-  };
+        return isOnVector(piece) && blockingPieces.length == 0
+    }
 
-  const findBlockingPieces = (isOnVector, piece) => {
-    return pieces.filter(
-      (p) =>
-        isOnVector(p) &&
-        p.type !== EMPTY &&
-        Math.sign(p.rankDiff) === Math.sign(piece.rankDiff) &&
-        Math.sign(p.fileDiff) === Math.sign(piece.fileDiff) &&
-        (Math.abs(p.fileDiff) < Math.abs(piece.fileDiff) ||
-          Math.abs(p.rankDiff) < Math.abs(piece.rankDiff))
-    );
-  };
+    const pieceAttackPatterns = {
+        "Q": (piece) =>
+            canAttack(piece, isInStraightLine) || canAttack(piece, isOnDiagonal),
+        "R": (piece) => canAttack(piece, isInStraightLine),
+        "B": (piece) => canAttack(piece, isOnDiagonal),
+        "N": (piece) => canKnightAttack(piece),
+        "K": () => false,
+        "P": (piece) => canPawnAttack(piece),
+        " ": () => false
+    }
 
-  const canAttack = (piece, isOnVector) => {
-    const blockingPieces = findBlockingPieces(isOnVector, piece);
+    const pieces = getPiecesFromBoard()
 
-    return isOnVector(piece) && blockingPieces.length == 0;
-  };
-
-  const pieceAttackPatterns = {
-    "♛": (piece) =>
-      canAttack(piece, isInStraightLine) || canAttack(piece, isOnDiagonal),
-    "♜": (piece) => canAttack(piece, isInStraightLine),
-    "♝": (piece) => canAttack(piece, isOnDiagonal),
-    "♞": (piece) => canKnightAttack(piece),
-    "♔": () => false,
-    "♟": (piece) => canPawnAttack(piece),
-    " ": () => false,
-  };
-
-  const pieces = getPiecesFromBoard(board);
-
-  return pieces.filter((p) => pieceAttackPatterns[p.type](p)).length > 0;
+    return pieces.filter((p) => pieceAttackPatterns[p.type](p)).length > 0
 };
